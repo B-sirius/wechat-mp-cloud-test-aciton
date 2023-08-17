@@ -45,4 +45,4 @@ outputs:
     description: 'task report link'
 runs:
   using: 'node16'
-  main: 'index.js'
+  main: 'dist/index.js'
