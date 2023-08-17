@@ -1,0 +1,48 @@
+name: 'WeChat MP cloud test action'
+description: 'WeChat MP cloud test'
+inputs:
+  token:
+    description: 'token'
+    required: true
+  group_en_id:
+    description: 'group_en_id'
+    required: true
+  test_type:
+    description: 'test_type'
+    required: true
+  wx_version:
+    description: 'wx_version'
+    required: true
+  platforms:
+    description: 'platforms'
+    required: true
+  selected_android_num:
+    description: 'selected_android_num'
+  selected_ios_num:
+    description: 'selected_ios_num'
+  wx_id:
+    description: 'wx_id'
+  test_plan_id:
+    description: 'test_plan_id'
+  task_run_time:
+    description: 'task_run_time'
+  desc:
+    description: 'desc'
+  minium_config:
+    description: 'minium_config'
+  dev_account_no:
+    description: 'dev_account_no'
+  virtual_accounts:
+    description: 'virtual_accounts'
+  run_mode:
+    description: 'run_mode'
+  special_cloud:
+    description: 'special_cloud'
+  device_ids:
+    description: 'device_ids'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'node16'
+  main: 'index.js'
