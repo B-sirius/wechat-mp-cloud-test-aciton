@@ -41,8 +41,8 @@ inputs:
   device_ids:
     description: 'device_ids'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  report_link:
+    description: 'task report link'
 runs:
   using: 'node16'
   main: 'index.js'

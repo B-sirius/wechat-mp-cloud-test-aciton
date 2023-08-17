@@ -1,5 +1,4 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 const fetch = require('node-fetch');
 
 const parseString = (keyName, value, required = false) => {
@@ -75,22 +74,26 @@ const parseArguments = () => {
 }
 
 const startTask = async () => {
-  const arguments = parseArguments();
-  const response = await fetch('https://minitest.weixin.qq.com/thirdapi/plan', {
-    method: 'POST',
-    body: arguments
-  }).json();
-  const planId = response?.data?.plan_id;
-
-  if (!planId) {
-    throw new Error(`start task failed`)
+  try {
+    const arguments = parseArguments();
+    const response = await fetch('https://minitest.weixin.qq.com/thirdapi/plan', {
+      method: 'POST',
+      body: arguments
+    }).json();
+    const planId = response?.data?.plan_id;
+  
+    if (!planId) {
+      throw new Error(`start task failed`)
+    }
+  
+    return {
+      planId,
+      token: arguments.token,
+      enId: arguments.enId,
+    };
+  } catch (error) {
+    throw new Error(error)
   }
-
-  return {
-    planId,
-    token: arguments.token,
-    enId: arguments.enId,
-  };
 }
 
 const checkTaskStatus = async ({ planId, token, enId }) => {
@@ -101,27 +104,27 @@ const checkTaskStatus = async ({ planId, token, enId }) => {
         const status = response?.data?.status;
         if (!status) {
           clearInterval(intervalId);
-          reject('check task status failed');
+          reject('check task status failed');``
         }
         switch(status) {
           case 1: {
-            console.log('排队中');
+            core.info('排队中');
           }
           case 2: {
-            console.log('测试中')
+            core.info('测试中')
           }
           case 11: {
-            console.log('未发现Case')
+            core.info('未发现Case')
             clearInterval(intervalId);
             reject('查询测试任务接口请求失败');
           }
           case 12: {
-            console.log('测试结束')
+            core.info('测试结束')
             clearInterval(intervalId);
             resolve();
           }
           case 15: {
-            console.log('任务超时')
+            core.info('任务超时')
             clearInterval(intervalId);
           }
         }
@@ -143,12 +146,17 @@ const getTaskReport = async ({ planId, token, enId }) => {
   
 }
 
-try {
-  const taskInfo = await startTask();
-  await checkTaskStatus(taskInfo);
-  const reportLink = await getTaskReport(taskInfo);
-  console.log(`report link: ${reportLink}`)
-  core.setOutput('reportLink', reportLink)
-} catch (error) {
-  core.setFailed(error.message);
+const run = async () => {
+  try {
+    const taskInfo = await startTask();
+    await checkTaskStatus(taskInfo);
+    const reportLink = await getTaskReport(taskInfo);
+    core.info(`report link: ${reportLink}`)
+    core.setOutput('report_link', reportLink)
+  } catch (error) {
+    core.error(error);
+    core.setFailed(error.message);
+  }
 }
+
+run();
