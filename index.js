@@ -108,23 +108,23 @@ const checkTaskStatus = async ({ planId, token, enId }) => {
         }
         switch(status) {
           case 1: {
-            core.info('排队中');
+            core.info('In the line...');
           }
           case 2: {
-            core.info('测试中')
+            core.info('Testing...')
           }
           case 11: {
-            core.info('未发现Case')
+            core.info('Test case not found')
             clearInterval(intervalId);
             reject('查询测试任务接口请求失败');
           }
           case 12: {
-            core.info('测试结束')
+            core.info('Test job completed')
             clearInterval(intervalId);
             resolve();
           }
           case 15: {
-            core.info('任务超时')
+            core.info('Test job timed out')
             clearInterval(intervalId);
           }
         }
